@@ -1,6 +1,6 @@
 <?php
 
-namespace Cyclonecode\Wordpress;
+namespace Cyclonecode\Plugin;
 
 class Settings
 {
@@ -17,7 +17,7 @@ class Settings
      *
      * @var array $settings
      */
-    public $settings = array();
+    private $settings = array();
 
     /**
      * Version

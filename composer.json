@@ -1,5 +1,5 @@
 {
-  "name": "cyclonecode/wordpress",
+  "name": "cyclonecode/plugin",
   "type": "library",
   "version": "1.0.0",
   "keywords": ["wordpress", "plugin", "settings", "components"],
@@ -7,7 +7,7 @@
   "time": "2021-01-07",
   "license": "GPL-2.0-or-later",
   "readme": "readme.txt",
-  "homepage": "https://github.com/Cyclonecode/Wordpress/",
+  "homepage": "https://github.com/Cyclonecode/Plugin/",
   "authors": [
     {
       "name": "Cyclonecode",
@@ -17,8 +17,8 @@
   ],
   "support": {
     "email": "cyclonecode.help@gmail.com",
-    "issues": "https://github.com/Cyclonecode/Wordpress/issues",
-    "source": "https://github.com/Cyclonecode/Wordpress",
+    "issues": "https://github.com/Cyclonecode/Plugin/issues",
+    "source": "https://github.com/Cyclonecode/Plugin",
     "chat": "https://join.slack.com/t/cyclonecode/shared_invite/zt-6bdtbdab-n9QaMLM~exHP19zFDPN~AQ"
   },
   "autoload": {

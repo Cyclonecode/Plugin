@@ -1,6 +1,6 @@
 <?php
 
-namespace Cyclonecode\Wordpress;
+namespace Cyclonecode\Plugin;
 
 abstract class Singleton
 {
