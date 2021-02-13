@@ -1,6 +1,6 @@
 <?php
 
-namespace Cyclonecode\Plugin;
+namespace CisionBlock\Plugin;
 
 class Settings
 {
@@ -24,7 +24,7 @@ class Settings
      *
      * @var string
      */
-    public $version = '1.0.0';
+    public $version = '1.0.4';
 
     /**
      * Settings constructor.
@@ -83,11 +83,13 @@ class Settings
 
     /**
      * Delete this setting from database.
+     * @return $this
      */
     public function delete()
     {
         delete_option($this->optionName);
         $this->settings = array();
+        return $this;
     }
 
     /**
@@ -98,10 +100,11 @@ class Settings
      *
      * @param mixed $value
      *   The value to set.
+     * @return $this
      */
     public function __set($name, $value)
     {
-        $this->set($name, $value);
+        return $this->set($name, $value);
     }
 
     /**
@@ -111,22 +114,26 @@ class Settings
      *   Name of option to set.
      * @param mixed $value
      *   The value to set.
+     * @return $this;
      */
     public function set($name, $value)
     {
         $this->settings[$name] = $value;
+        return $this;
     }
 
     /**
      * Sets configuration from array.
      *
      * @param array $settings
+     * @return $this
      */
     public function setFromArray(array $settings)
     {
         foreach ($settings as $key => $value) {
             $this->set($key, $value);
         }
+        return $this;
     }
 
     /**
@@ -136,12 +143,14 @@ class Settings
      *   Name of setting to add.
      * @param mixed $value
      *   Value to add.
+     * @return $this
      */
     public function add($name, $value)
     {
         if (!isset($this->settings[$name])) {
             $this->set($name, $value);
         }
+        return $this;
     }
 
     /**
@@ -190,10 +199,12 @@ class Settings
      *
      * @param string $name
      *   Name of setting to remove.
+     * @return $this
      */
     public function remove($name)
     {
         unset($this->settings[$name]);
+        return $this;
     }
 
     /**
@@ -203,6 +214,7 @@ class Settings
      *   Name of setting.
      * @param string $to
      *   New name for setting.
+     * @return $this
      */
     public function rename($from, $to)
     {
@@ -210,14 +222,17 @@ class Settings
             $this->settings[$to] = $this->settings[$from];
             $this->remove($from);
         }
+        return $this;
     }
 
     /**
      * Load settings from database.
+     * @return $this
      */
     public function load()
     {
         $this->settings = get_option($this->optionName);
+        return $this;
     }
 
     /**
@@ -232,10 +247,35 @@ class Settings
     }
 
     /**
+     * Save settings to file.
+     *
+     * @param $filename
+     * @param string $format
+     * @return false|int
+     */
+    public function saveToFile($filename, $format = 'json')
+    {
+        $content = '';
+        switch ($format) {
+            case 'raw':
+                $content = serialize($this->settings);
+                break;
+            case 'json':
+                $content = $this->toJSON();
+                break;
+            case 'yaml':
+                $content = $this->toYaml();
+                break;
+        }
+        return @file_put_contents($filename, $content);
+    }
+
+    /**
      * Removes any settings that is not defined in $options.
      *
      * @param array $options
      *   An array which keys will be used to validate the current settings keys.
+     * @return $this
      */
     public function clean(array $options)
     {
@@ -246,5 +286,6 @@ class Settings
                 }
             }
         }
+        return $this;
     }
 }
