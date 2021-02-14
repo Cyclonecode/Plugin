@@ -1,10 +1,9 @@
 <?php
 
-namespace CisionBlock\Plugin;
+namespace Cyclonecode\Plugin;
 
-class Settings
+class Settings implements \IteratorAggregate, \Countable, \ArrayAccess
 {
-
     /**
      * Name of configuration option.
      *
@@ -24,7 +23,7 @@ class Settings
      *
      * @var string
      */
-    public $version = '1.0.4';
+    public $version = '1.0.5';
 
     /**
      * Settings constructor.
@@ -137,6 +136,39 @@ class Settings
     }
 
     /**
+     * Check if a setting isset.
+     *
+     * @param $key
+     * @return bool
+     */
+    public function hasKey($key)
+    {
+        return $this->__isset($key);
+    }
+
+    /**
+     * Check if a setting isset.
+     *
+     * @param $key
+     * @return bool
+     */
+    public function has($key)
+    {
+        return $this->__isset($key);
+    }
+
+    /**
+     * Check if a setting isset.
+     *
+     * @param $key
+     * @return bool
+     */
+    public function __isset($key)
+    {
+        return isset($this->settings[$key]);
+    }
+
+    /**
      * Add a setting.
      *
      * @param string $name
@@ -171,12 +203,14 @@ class Settings
      *
      * @param string $name
      *   Name of option to get.
+     * @param mixed $default
+     *   Default value to return if settings does not exists.
      *
      * @return mixed
      */
-    public function get($name)
+    public function get($name, $default = null)
     {
-        return (isset($this->settings[$name]) ? $this->settings[$name] : null);
+        return (isset($this->settings[$name]) ? $this->settings[$name] : $default);
     }
 
     /**
@@ -287,5 +321,35 @@ class Settings
             }
         }
         return $this;
+    }
+
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->settings);
+    }
+
+    public function count()
+    {
+        return count($this->settings);
+    }
+
+    public function offsetExists($offset)
+    {
+        return $this->__isset($offset);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->__get($offset);
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->__set($offset, $value);
+    }
+
+    public function offsetUnset($offset)
+    {
+        $this->remove($offset);
     }
 }
