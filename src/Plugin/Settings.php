@@ -23,7 +23,7 @@ class Settings implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @var string
      */
-    public $version = '1.0.5';
+    public $version = '1.0.6';
 
     /**
      * Settings constructor.
@@ -233,6 +233,17 @@ class Settings implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @param string $name
      *   Name of setting to remove.
+     */
+    public function __unset($name)
+    {
+        $this->remove($name);
+    }
+
+    /**
+     * Remove setting.
+     *
+     * @param string $name
+     *   Name of setting to remove.
      * @return $this
      */
     public function remove($name)
@@ -323,31 +334,49 @@ class Settings implements \IteratorAggregate, \Countable, \ArrayAccess
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getIterator()
     {
         return new \ArrayIterator($this->settings);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function count()
     {
         return count($this->settings);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function offsetExists($offset)
     {
         return $this->__isset($offset);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function offsetGet($offset)
     {
         return $this->__get($offset);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function offsetSet($offset, $value)
     {
         $this->__set($offset, $value);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function offsetUnset($offset)
     {
         $this->remove($offset);
