@@ -2,11 +2,11 @@
 
 namespace Cyclonecode\Plugin\Http;
 
-class Request extends AbstractRequest
+class RemoteRequest extends AbstractRequest
 {
     /**
      * Performs a remote request.
-     * @param $url
+     * @param string $url
      * @param array $args
      * @return false|string
      * @throws \Exception

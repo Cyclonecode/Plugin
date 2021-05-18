@@ -9,11 +9,13 @@ There is a Singleton class that can be used like this:
 ```php
 namespace Vendor;
 
-class Example_Plugin extends \Cyclonecode\Plugin\Singleton
+use \Cyclonecode\Plugin\Common\Singleton;
+
+class Example_Plugin extends Singleton
 {
+  // Called when instance is created
   public function init()
   {
-    // Triggered when instance is created
     add_action('admin_menu', array($this, 'doMenu'));
   }
 }
@@ -22,8 +24,22 @@ class Example_Plugin extends \Cyclonecode\Plugin\Singleton
 Then in your main plugin file you get an instance like this:
 
 ```php
+<?php
+
+/**
+ * Plugin Name: Example Plugin
+ * Description: Example Plugin Description.
+ * Version: 1.0.0
+ * Author: YOU
+ * Text Domain: example-plugin
+**/
+ 
+namespace Vendor;
+
+require_once __DIR__ . '/vendor/autoload.php';
+
 add_action('plugins_loaded', function () {
-    \Vendor\Example_Plugin\::getInstance();
+    \Vendor\Example_Plugin::getInstance();
 });
 ```
 
@@ -36,11 +52,13 @@ Example:
 ```php
 namespace Vendor;
 
-use Cyclonecode\Plugin\Settings;
+use \Cyclonecode\Plugin\Common\Singleton;
+use \Cyclonecode\Plugin\Settings\Settings;
 
-class Example_Plugin extends Cyclonecode\Plugin\Singleton
+class Example_Plugin extends Singleton
 {
    const SETTINGS_NAME = 'example_plugin_settings';
+   const TEXT_DOMAIN = 'example-plugin';
    const VERSION = '1.0.0';
 
    protected $settings;
@@ -55,9 +73,9 @@ class Example_Plugin extends Cyclonecode\Plugin\Singleton
    {
       // Create and make sure we have default settings
       $this->settings = new Settings(self::SETTINGS_NAME);
-      $this->settings->setFromArray($this->getDefaults());
-      add_action('admin_menu', array($this, 'doMenu');
-      add_action('admin_post_example_plugin_save_settings', array($this, 'saveSettings');
+      $this->settings->setFromArray($this->getDefaultSettings());
+      add_action('admin_menu', array($this, 'doMenu'));
+      add_action('admin_post_example_plugin_save_settings', array($this, 'saveSettings'));
    }
    
    public function doMenu()
@@ -67,7 +85,7 @@ class Example_Plugin extends Cyclonecode\Plugin\Singleton
             __('Example Plugin', self::TEXT_DOMAIN),
             __('Example Plugin', self::TEXT_DOMAIN),
             'manage_options',
-            'example_plugin',
+            'example-plugin',
             array($this, 'doSettingsPage')
         );
    }
@@ -106,6 +124,115 @@ class Example_Plugin extends Cyclonecode\Plugin\Singleton
           FILTER_SANITIZE_STRING
         ))
        ->save();
+       
+       wp_safe_redirect(add_query_arg(array(
+         'page' => 'example-plugin',
+       ), 'tools.php'));
+   }
+}
+```
+
+## Request
+
+The Request class can be used to make HTTP requests.
+
+Example:
+
+```php
+namespace Vendor;
+
+use Cyclonecode\Plugin\Common\Singleton;
+use Cyclonecode\Plugin\Http\RequestInterface;
+use Cyclonecode\Plugin\Http\Request;
+
+class Example_Plugin extends Singleton
+{
+    /** @var RequestInterface */
+    private $request;
+    
+    public function init()
+    {
+      $this->request = new Request();
+    }
+    
+    public function saveSettings()
+    {
+      // Check so the supplied URL is ok.
+      try {
+        $url = 'https://example.com';
+        $response = $this->request->get(
+          $url,
+          array(
+            'body' => array(
+              'foo' => 'bar',
+            ),
+          )
+        );
+        // Store response in transient
+        set_transient('tmp', $response);
+      } catch (\Exception $e) {
+        // Something went wrong
+        var_dump($e->getMessage() . ' ' . $e->getCode());
+      }
+   }
+}
+```
+
+## Cache
+
+There is a Transient class that implements the CacheInterface and is used to set and get transient data.
+
+Example:
+
+```php
+namespace Vendor;
+
+use Cyclonecode\Plugin\Common\Singleton;
+use Cyclonecode\Plugin\Http\RequestInterface;
+use Cyclonecode\Plugin\Http\Request;
+use Cyclonecode\Plugin\Cache\Transient;
+
+class Example_Plugin extends Singleton
+{
+    /** @var RequestInterface */
+    private $request;
+
+    /** @var CacheInterface */
+    private $cache;
+    
+    public function init()
+    {
+      $this->request = new Request();
+      $this->cache = Transient::getInstance();
+    }
+    
+    public function saveSettings()
+    {
+      $key = 'Example_Plugin_Saving';
+      if ($this->cache->exists($key)) {
+        // We already doing stuff.
+        return;
+      }
+    
+      $this->cache->set($key, 1);
+      // Check so the supplied URL is ok.
+      try {
+        $url = 'https://example.com';
+        $response = $this->request->get(
+          $url,
+          array(
+            'body' => array(
+              'foo' => 'bar',
+            ),
+          )
+        );
+        // Store response in transient
+        $this->cache->set('tmp', $response);
+      } catch (\Exception $e) {
+        // Something when wrong
+        var_dump($e->getMessage() . ' ' . $e->getCode());
+      }
+      $this->cache->delete($key);
    }
 }
 ```

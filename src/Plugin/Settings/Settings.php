@@ -1,6 +1,6 @@
 <?php
 
-namespace Cyclonecode\Plugin;
+namespace Cyclonecode\Plugin\Settings;
 
 class Settings implements \IteratorAggregate, \Countable, \ArrayAccess
 {

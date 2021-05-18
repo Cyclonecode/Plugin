@@ -39,4 +39,28 @@ abstract class AbstractRequest implements RequestInterface
     {
         return $this->execute($url, array('method' => self::VERB_POST) + $args);
     }
+
+    /**
+     * Performs a PUT request
+     *
+     * @param string $url
+     * @param array $args
+     * @return mixed|null
+     */
+    public function put($url, array $args = array())
+    {
+        return $this->execute($url, array('method' => self::VERB_PUT) + $args);
+    }
+
+    /**
+     * Performs a PATCH request
+     *
+     * @param string $url
+     * @param array $args
+     * @return mixed|null
+     */
+    public function patch($url, array $args = array())
+    {
+        return $this->execute($url, array('method' => self::VERB_PATCH) + $args);
+    }
 }
