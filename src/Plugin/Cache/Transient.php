@@ -2,7 +2,7 @@
 
 namespace Cyclonecode\Plugin\Cache;
 
-use Cyclonecode\Plugin\Singleton;
+use Cyclonecode\Plugin\Common\Singleton;
 
 class Transient extends Singleton implements CacheInterface
 {
