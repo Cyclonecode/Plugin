@@ -9,7 +9,7 @@ There is a Singleton class that can be used like this:
 ```php
 namespace Vendor;
 
-use \Cyclonecode\Plugin\Common\Singleton;
+use Cyclonecode\Plugin\Common\Singleton;
 
 class Example_Plugin extends Singleton
 {
@@ -39,7 +39,7 @@ namespace Vendor;
 require_once __DIR__ . '/vendor/autoload.php';
 
 add_action('plugins_loaded', function () {
-    \Vendor\Example_Plugin::getInstance();
+    Example_Plugin::getInstance();
 });
 ```
 
@@ -52,8 +52,8 @@ Example:
 ```php
 namespace Vendor;
 
-use \Cyclonecode\Plugin\Common\Singleton;
-use \Cyclonecode\Plugin\Settings\Settings;
+use Cyclonecode\Plugin\Common\Singleton;
+use Cyclonecode\Plugin\Settings\Settings;
 
 class Example_Plugin extends Singleton
 {
@@ -143,7 +143,7 @@ namespace Vendor;
 
 use Cyclonecode\Plugin\Common\Singleton;
 use Cyclonecode\Plugin\Http\RequestInterface;
-use Cyclonecode\Plugin\Http\Request;
+use Cyclonecode\Plugin\Http\RemoteRequest;
 
 class Example_Plugin extends Singleton
 {
@@ -152,7 +152,7 @@ class Example_Plugin extends Singleton
     
     public function init()
     {
-      $this->request = new Request();
+      $this->request = new RemoteRequest();
     }
     
     public function saveSettings()
@@ -189,7 +189,7 @@ namespace Vendor;
 
 use Cyclonecode\Plugin\Common\Singleton;
 use Cyclonecode\Plugin\Http\RequestInterface;
-use Cyclonecode\Plugin\Http\Request;
+use Cyclonecode\Plugin\Http\RemoteRequest;
 use Cyclonecode\Plugin\Cache\Transient;
 
 class Example_Plugin extends Singleton
@@ -202,7 +202,7 @@ class Example_Plugin extends Singleton
     
     public function init()
     {
-      $this->request = new Request();
+      $this->request = new RemoteRequest();
       $this->cache = Transient::getInstance();
     }
     
