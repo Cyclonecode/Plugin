@@ -19,10 +19,17 @@ class RemoteRequest extends AbstractRequest
         );
         $args = array_merge($defaults, $args);
         $response = wp_safe_remote_request($url, $args);
-        if (!is_wp_error($response) && ($response['response']['code'] == 200 || $response['response']['code'] == 201)) {
-            $result = json_encode(wp_remote_retrieve_body($response));
+        if (!is_wp_error($response) && in_array(wp_remote_retrieve_response_code($response), array(200, 201))) {
+            $result = new Response(
+                wp_remote_retrieve_body($response),
+                wp_remote_retrieve_headers($response),
+                wp_remote_retrieve_response_code($response)
+            );
         } else {
-            throw new \Exception($response['response']['message'], $response['response']['code']);
+            throw new \Exception(
+                wp_remote_retrieve_response_message($response),
+                wp_remote_retrieve_response_code($response)
+            );
         }
         return $result;
     }
