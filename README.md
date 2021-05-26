@@ -168,11 +168,16 @@ class Example_Plugin extends Singleton
             ),
           )
         );
+        // Check so the request was successful
+        $response = ($response->getHttpCode() === 200 ? $response->toJSON() : null);
+
         // Store response in transient
-        set_transient('tmp', $response);
+        if ($response) {
+          set_transient('tmp', $response);
+        }
       } catch (\Exception $e) {
         // Something went wrong
-        var_dump($e->getMessage() . ' ' . $e->getCode());
+        error_log($e->getMessage() . ' ' . $e->getCode());
       }
    }
 }
@@ -226,11 +231,13 @@ class Example_Plugin extends Singleton
             ),
           )
         );
-        // Store response in transient
-        $this->cache->set('tmp', $response);
+        if ($response->getHttpCode() === 200) {
+          // Store response in transient
+          $this->cache->set('tmp', $response->toJSON());
+        }
       } catch (\Exception $e) {
         // Something when wrong
-        var_dump($e->getMessage() . ' ' . $e->getCode());
+        error_log($e->getMessage() . ' ' . $e->getCode());
       }
       $this->cache->delete($key);
    }
