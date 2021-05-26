@@ -8,7 +8,7 @@ class RemoteRequest extends AbstractRequest
      * Performs a remote request.
      * @param string $url
      * @param array $args
-     * @return false|string
+     * @return Response
      * @throws \Exception
      */
     public function execute($url, array $args = array())
